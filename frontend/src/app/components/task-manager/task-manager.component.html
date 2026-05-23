@@ -1,0 +1,245 @@
+<main class="page">
+  <section class="shell">
+    <header class="topbar">
+      <div>
+        <h1>Student Task Manager</h1>
+        <p *ngIf="user">Signed in as {{ user.name }}</p>
+      </div>
+      <div class="top-actions">
+        <button class="theme-toggle" type="button" (click)="toggleTheme()">
+          {{ isDarkMode ? 'Light' : 'Dark' }}
+        </button>
+        <button *ngIf="user" class="ghost-button" type="button" (click)="logout()">Logout</button>
+      </div>
+    </header>
+
+    <form *ngIf="!user" class="auth-panel" (ngSubmit)="submitAuth()">
+      <div class="mode-switch">
+        <button
+          type="button"
+          [class.active]="authMode === 'login'"
+          (click)="authMode = 'login'"
+        >
+          Login
+        </button>
+        <button
+          type="button"
+          [class.active]="authMode === 'signup'"
+          (click)="authMode = 'signup'"
+        >
+          Sign up
+        </button>
+      </div>
+
+      <input
+        *ngIf="authMode === 'signup'"
+        name="name"
+        type="text"
+        placeholder="Name"
+        [(ngModel)]="name"
+      >
+      <input name="email" type="email" placeholder="Email" [(ngModel)]="email">
+      <input name="password" type="password" placeholder="Password" [(ngModel)]="password">
+
+      <button class="primary-button" type="submit" [disabled]="loading">
+        {{ loading ? 'Please wait...' : authMode === 'signup' ? 'Create account' : 'Login' }}
+      </button>
+    </form>
+
+    <section *ngIf="user" class="task-area">
+      <section class="dashboard" aria-label="Task dashboard">
+        <article class="metric">
+          <span>Total</span>
+          <strong>{{ totalTasks }}</strong>
+        </article>
+        <article class="metric">
+          <span>Pending</span>
+          <strong>{{ pendingTasks }}</strong>
+        </article>
+        <article class="metric">
+          <span>Completed</span>
+          <strong>{{ completedTasks }}</strong>
+        </article>
+        <article class="metric">
+          <span>Done</span>
+          <strong>{{ completionRate }}%</strong>
+        </article>
+      </section>
+
+      <form class="task-form" (ngSubmit)="addTask()">
+        <input
+          name="newTask"
+          type="text"
+          placeholder="Add a task"
+          [(ngModel)]="newTaskTitle"
+        >
+        <input
+          name="newDueDate"
+          type="date"
+          aria-label="Due date"
+          [(ngModel)]="newTaskDueDate"
+        >
+        <select name="newPriority" aria-label="Priority" [(ngModel)]="newTaskPriority">
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+        <input
+          name="newCategories"
+          type="text"
+          placeholder="Tags: Assignment, Exam"
+          [(ngModel)]="newTaskCategories"
+        >
+        <button class="primary-button" type="submit">Add</button>
+      </form>
+
+      <section class="suggestions" aria-label="Task suggestions">
+        <h2>Suggested tasks</h2>
+        <div class="suggestion-list">
+          <button
+            *ngFor="let suggestion of suggestedTasks"
+            type="button"
+            class="suggestion-button"
+            (click)="addSuggestedTask(suggestion)"
+          >
+            {{ suggestion }}
+          </button>
+        </div>
+      </section>
+
+      <input
+        class="search"
+        name="search"
+        type="search"
+        placeholder="Search tasks"
+        [(ngModel)]="searchText"
+        (ngModelChange)="onSearchChange()"
+      >
+
+      <p *ngIf="loading" class="state">Loading...</p>
+      <p *ngIf="!loading && tasks.length === 0" class="state">No tasks found.</p>
+
+      <div class="table-wrap" *ngIf="tasks.length > 0">
+        <table class="task-table">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Priority</th>
+              <th>Due</th>
+              <th>Tags</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of tasks">
+              <td data-label="Task">
+                <span
+                  *ngIf="editingTaskId !== task._id"
+                  class="task-title"
+                  [class.done]="task.completed"
+                >
+                  {{ task.title }}
+                </span>
+
+                <input
+                  *ngIf="editingTaskId === task._id"
+                  class="edit-input"
+                  name="editTitle"
+                  [(ngModel)]="editingTitle"
+                >
+              </td>
+              <td data-label="Priority">
+                <span *ngIf="editingTaskId !== task._id" class="priority-pill">
+                  <span class="priority-dot" [ngClass]="priorityClass(task.priority)"></span>
+                  {{ task.priority || 'Medium' }}
+                </span>
+
+                <select
+                  *ngIf="editingTaskId === task._id"
+                  class="edit-input"
+                  name="editPriority"
+                  [(ngModel)]="editingPriority"
+                >
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+              </td>
+              <td data-label="Due">
+                <span *ngIf="editingTaskId !== task._id">
+                  {{ task.dueDate ? (task.dueDate | date: 'mediumDate') : '-' }}
+                </span>
+
+                <input
+                  *ngIf="editingTaskId === task._id"
+                  class="edit-input"
+                  type="date"
+                  name="editDueDate"
+                  [(ngModel)]="editingDueDate"
+                >
+              </td>
+              <td data-label="Tags">
+                <div *ngIf="editingTaskId !== task._id" class="tag-list">
+                  <span *ngFor="let category of task.categories" class="tag">{{ category }}</span>
+                  <span *ngIf="!task.categories?.length" class="muted">-</span>
+                </div>
+
+                <input
+                  *ngIf="editingTaskId === task._id"
+                  class="edit-input"
+                  name="editCategories"
+                  placeholder="Assignment, Exam"
+                  [(ngModel)]="editingCategories"
+                >
+              </td>
+              <td data-label="Status">
+                <label class="check">
+                  <input
+                    type="checkbox"
+                    [checked]="task.completed"
+                    (change)="toggleTask(task)"
+                  >
+                  <span>{{ task.completed ? 'Completed' : 'Pending' }}</span>
+                </label>
+              </td>
+              <td data-label="Actions">
+                <div class="actions">
+                  <button
+                    *ngIf="editingTaskId !== task._id"
+                    type="button"
+                    class="ghost-button"
+                    (click)="startEdit(task)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    *ngIf="editingTaskId === task._id"
+                    type="button"
+                    class="ghost-button"
+                    (click)="saveEdit(task)"
+                  >
+                    Save
+                  </button>
+                  <button
+                    *ngIf="editingTaskId === task._id"
+                    type="button"
+                    class="ghost-button"
+                    (click)="cancelEdit()"
+                  >
+                    Cancel
+                  </button>
+                  <button type="button" class="danger-button" (click)="deleteTask(task._id)">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p *ngIf="message" class="message">{{ message }}</p>
+  </section>
+</main>

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/styles.css"],
+  "sourcesContent": ["* {\n  box-sizing: border-box;\n}\n\nbody {\n  margin: 0;\n  min-height: 100vh;\n  color: #172026;\n  background: #f6f7f8;\n  font-family: Arial, Helvetica, sans-serif;\n}\n\nbutton,\ninput {\n  font: inherit;\n}\n"],
+  "mappings": ";AAAA;AACE,cAAY;AACd;AAEA;AACE,UAAQ;AACR,cAAY;AACZ,SAAO;AACP,cAAY;AACZ;AAAA,IAAa,KAAK;AAAA,IAAE,SAAS;AAAA,IAAE;AACjC;AAEA;AACA;AACE,QAAM;AACR;",
+  "names": []
+}

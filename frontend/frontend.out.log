@@ -1,0 +1,57 @@
+
+> student-task-manager-frontend@1.0.0 start
+> ng serve
+
+Initial chunk files | Names         |  Raw size
+polyfills.js        | polyfills     |  88.09 kB | 
+main.js             | main          |  30.13 kB | 
+styles.css          | styles        | 304 bytes | 
+
+                    | Initial total | 118.51 kB
+
+Application bundle generation complete. [2.213 seconds]
+
+Watch mode enabled. Watching for file changes...
+  ➜  Local:   http://localhost:4200/
+Initial chunk files | Names | Raw size
+main.js             | main  | 30.72 kB | 
+
+Application bundle generation complete. [1.047 seconds]
+
+Page reload sent to client(s).
+Initial chunk files | Names | Raw size
+main.js             | main  | 34.50 kB | 
+
+Application bundle generation complete. [0.293 seconds]
+
+Page reload sent to client(s).
+Initial chunk files | Names | Raw size
+main.js             | main  | 37.00 kB | 
+
+Application bundle generation complete. [0.377 seconds]
+
+Page reload sent to client(s).
+Application bundle generation failed. [0.674 seconds]
+
+Initial chunk files | Names         |  Raw size
+polyfills.js        | polyfills     |  88.09 kB | 
+main.js             | main          |  38.29 kB | 
+styles.css          | styles        |   1.09 kB | 
+
+                    | Initial total | 127.46 kB
+
+Application bundle generation complete. [0.369 seconds]
+
+Page reload sent to client(s).
+Initial chunk files | Names | Raw size
+main.js             | main  | 48.63 kB | 
+
+Application bundle generation complete. [0.248 seconds]
+
+Page reload sent to client(s).
+Initial chunk files | Names | Raw size
+main.js             | main  | 50.23 kB | 
+
+Application bundle generation complete. [0.322 seconds]
+
+Page reload sent to client(s).
